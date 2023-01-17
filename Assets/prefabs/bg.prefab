@@ -95,3 +95,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2b52ffbf3c64214087d95160f9f39b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dots:
+  - {fileID: 7279292765732320470, guid: c022acf7d8446b24795d20201fadec06, type: 3}
+  - {fileID: 7513281997675930763, guid: 045fe0377aa3dca4a874d7af0ef17a79, type: 3}
+  - {fileID: 2368928451001036015, guid: 1facb3d75a8f942438d24144b0ee0964, type: 3}
+  - {fileID: 6638889070045565676, guid: ad1630cecc10a374994ac62e600bf8d3, type: 3}
+  - {fileID: 134866904988261631, guid: 347c45b522d2d0947968c9dd1f2d0856, type: 3}
+  - {fileID: 716127865358457749, guid: 74cb2f5b0d63df54ab35c56d5b79bc77, type: 3}
+  - {fileID: 5712693181340164135, guid: d8f4c9ba65c73704a882ba2dd1239683, type: 3}
+  - {fileID: 98144876491575657, guid: b90237cc99f6ebf4abb1af9304815b47, type: 3}
+  - {fileID: 8024500460846845810, guid: 3e933e45c7c0279489a91b270f0a321a, type: 3}

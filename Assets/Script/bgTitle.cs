@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class bgTitle : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    [SerializeField] private List<GameObject> dots;
+    private void Start() {
+        //Initialize();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+   private void Initialize(){
+        int dotToUse = Random.Range(0, dots.Count);
+        GameObject dot = Instantiate(dots[dotToUse], transform.position, Quaternion.identity);
+        dot.transform.SetParent(transform);
+        dot.name = name;
     }
 }

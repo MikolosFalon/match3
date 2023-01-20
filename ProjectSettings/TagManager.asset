@@ -4,14 +4,15 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - sircle01
-  - sircle02
-  - sircle03
-  - sircle04
-  - sircle05
-  - sircle06
-  - sircle07
-  - sircle08
+  - Dot01
+  - Dot02
+  - Dot03
+  - Dot04
+  - Dot05
+  - Dot06
+  - Dot07
+  - Dot08
+  - Dot09
   layers:
   - Default
   - TransparentFX

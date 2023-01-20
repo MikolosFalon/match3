@@ -27,11 +27,11 @@ public class Board : MonoBehaviour
                 Vector2 tempPosition = new Vector2(ix, iy);
 
                 //bg
-                /*
+                
                 GameObject bgTitle= Instantiate(titlePrefab, tempPosition, Quaternion.identity);
                 bgTitle.transform.SetParent(transform);
                 bgTitle.name = "( " + ix + ", " + iy + " )";
-                */
+                
                 //dots
                 int dotToUse = Random.Range(0, dots.Count);
                 GameObject dot = Instantiate(

@@ -6,6 +6,10 @@ public class Dot : MonoBehaviour
 {
     //board variables
     [SerializeField] private Vector2Int dotPosition;
+    public void DotPosition(int xPosition, int yPosition){
+        dotPosition.x -=xPosition;
+        dotPosition.y -=yPosition;
+    }
     private Vector2Int dotPrevious;
     private Vector2Int TargetPosition;
     private bool isMatched = false;
@@ -31,7 +35,7 @@ public class Dot : MonoBehaviour
         matchedColor = new Color(1, 1, 1, 0.2f);
         board = FindObjectOfType<Board>();
         TargetPosition =new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        moveTime = 0.4f;
+        moveTime = 0.6f;
         dotPosition = TargetPosition;
         dotPrevious = dotPosition;
     }
@@ -49,22 +53,26 @@ public class Dot : MonoBehaviour
             //move towards the target
             TempPosition = new Vector2(TargetPosition.x, transform.position.y);
             transform.position = Vector2.Lerp(transform.position, TempPosition, moveTime);
+            if(board.allDots[dotPosition.x, dotPosition.y] != this.gameObject){
+                board.allDots[dotPosition.x, dotPosition.y] = this.gameObject;
+            }
         }else{
             //directly set the position
             TempPosition = new Vector2(TargetPosition.x, transform.position.y);
             transform.position = TempPosition;
-            board.allDots[dotPosition.x, dotPosition.y] = gameObject;
         }
         //y
         if(Mathf.Abs(TargetPosition.y-transform.position.y)> 0.1 ){
             //move towards the target
             TempPosition = new Vector2(transform.position.x, TargetPosition.y);
             transform.position = Vector2.Lerp(transform.position, TempPosition, moveTime);
+             if(board.allDots[dotPosition.x, dotPosition.y] != this.gameObject){
+                board.allDots[dotPosition.x, dotPosition.y] = this.gameObject;
+            }
         }else{
             //directly set the position
             TempPosition = new Vector2(transform.position.x, TargetPosition.y);
             transform.position = TempPosition;
-            board.allDots[dotPosition.x, dotPosition.y] = gameObject;
         } 
     }
 
@@ -128,7 +136,7 @@ public class Dot : MonoBehaviour
             GameObject leftDot1 = board.allDots[dotPosition.x-1, dotPosition.y];
             GameObject rightDot1 = board.allDots[dotPosition.x+1, dotPosition.y];
 
-            if (leftDot1.tag != null && rightDot1.tag != null)
+            if (leftDot1 != null && rightDot1 != null)
             {
                 if (leftDot1.tag == gameObject.tag && rightDot1.tag == gameObject.tag)
                 {
@@ -141,7 +149,7 @@ public class Dot : MonoBehaviour
         if(dotPosition.y>0 && dotPosition.y<board.size.y-1){
             GameObject downDot1 = board.allDots[dotPosition.x, dotPosition.y-1];
             GameObject upDot1 = board.allDots[dotPosition.x, dotPosition.y+1];
-            if (downDot1.tag != null && upDot1.tag != null)
+            if (downDot1 != null && upDot1 != null)
             {
                 if (downDot1.tag == gameObject.tag && upDot1.tag == gameObject.tag)
                 {

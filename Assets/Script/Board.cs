@@ -96,5 +96,69 @@ public class Board : MonoBehaviour
                 }
             }
         }
+        StartCoroutine(RecreateRowCo());
+    }
+    private IEnumerator RecreateRowCo(){
+        int nullCount = 0;
+        for (int ix = 0; ix < size.x; ix++)
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            { 
+                if (allDots[ix, iy] ==null)
+                {
+                    nullCount++;
+                }else if(nullCount >0){
+                    allDots[ix, iy].GetComponent<Dot>().DotPosition(0, nullCount);
+                    allDots[ix, iy] = null;
+                }
+            }
+            nullCount = 0;
+        }
+        yield return new WaitForSeconds(0.4f);
+        StartCoroutine(FillBoardCo());
+    }
+    private void RefillBoard(){
+        for (int ix = 0; ix < size.x; ix++)
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            {
+                if (allDots[ix, iy] == null)
+                { 
+                    Vector2 tempPosition = new Vector2(ix, iy);
+                    int dotToUse = Random.Range(0, dots.Count);
+                    GameObject dot = Instantiate(
+                    dots[dotToUse], tempPosition, Quaternion.identity);
+                    dot.transform.SetParent(transform);
+                    dot.name = "( " + ix + ", " + iy + " )";
+                    allDots[ix, iy] = dot;
+
+                }
+            }
+        }
+    }
+    private bool MatchesOnBoard(){
+        for (int ix = 0; ix < size.x; ix++)
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            {
+                if (allDots[ix, iy] != null)
+                { 
+                    if(allDots[ix, iy].GetComponent<Dot>().IsMatched){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    private IEnumerator FillBoardCo(){
+        RefillBoard();
+        yield return new WaitForSeconds(0.5f);
+
+        while (MatchesOnBoard())
+        {
+            yield return new WaitForSeconds(0.5f);
+            DestroyMatches();
+        }
     }
 }

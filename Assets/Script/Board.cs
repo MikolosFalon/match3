@@ -27,18 +27,73 @@ public class Board : MonoBehaviour
                 Vector2 tempPosition = new Vector2(ix, iy);
 
                 //bg
-                
                 GameObject bgTitle= Instantiate(titlePrefab, tempPosition, Quaternion.identity);
                 bgTitle.transform.SetParent(transform);
                 bgTitle.name = "( " + ix + ", " + iy + " )";
                 
                 //dots
                 int dotToUse = Random.Range(0, dots.Count);
+                int maxIterations = 0;
+
+                while(MatchesAt(new Vector2Int(ix,iy),dots[dotToUse]) && maxIterations < 100){
+                    dotToUse = Random.Range(0, dots.Count);
+                    maxIterations++;
+                }
+                maxIterations = 0;
+
                 GameObject dot = Instantiate(
                 dots[dotToUse], tempPosition, Quaternion.identity);
                 dot.transform.SetParent(transform);
                 dot.name = "( " + ix + ", " + iy + " )";
                 allDots[ix, iy] = dot;
+            }
+        }
+    }
+    private bool MatchesAt(Vector2Int positionPiece, GameObject piece){
+        if(positionPiece.x > 1 && positionPiece.y > 1){
+            if(allDots[positionPiece.x-1, positionPiece.y].tag == piece.tag &&
+            allDots[positionPiece.x-2, positionPiece.y].tag == piece.tag){
+                return true;
+            }
+            if(allDots[positionPiece.x, positionPiece.y-1].tag == piece.tag &&
+            allDots[positionPiece.x, positionPiece.y-2].tag == piece.tag){
+                return true;
+            }
+        }else {
+            if (positionPiece.y > 1)
+            {
+                if (allDots[positionPiece.x, positionPiece.y - 1].tag == piece.tag &&
+            allDots[positionPiece.x, positionPiece.y - 2].tag == piece.tag)
+                {
+                    return true;
+                }
+            }
+
+            if (positionPiece.x > 1)
+            {
+            if(allDots[positionPiece.x-1, positionPiece.y].tag == piece.tag &&
+            allDots[positionPiece.x-2, positionPiece.y].tag == piece.tag){
+                return true;
+            }
+            }
+        }
+        return false;
+    }
+    private void DestroyMatchesAt(Vector2Int positionPiece){
+        if(allDots[positionPiece.x, positionPiece.y].GetComponent<Dot>().IsMatched){
+            Destroy(allDots[positionPiece.x, positionPiece.y]);
+            allDots[positionPiece.x, positionPiece.y] = null;
+        }
+    }
+    public void DestroyMatches(){
+        for (int ix = 0; ix < size.x; ix++)
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            {
+                if (allDots[ix, iy] !=null)
+                {
+                    DestroyMatchesAt(new Vector2Int(ix, iy));
+                }
             }
         }
     }

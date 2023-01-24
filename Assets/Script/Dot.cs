@@ -9,6 +9,9 @@ public class Dot : MonoBehaviour
     private Vector2Int dotPrevious;
     private Vector2Int TargetPosition;
     private bool isMatched = false;
+    public bool IsMatched{
+        get => isMatched;
+    }
     private Color matchedColor;
     private Board board;
     private GameObject otherDot;
@@ -18,8 +21,8 @@ public class Dot : MonoBehaviour
     private Vector2 TempPosition;
 
     private float swipeAngle = 0;
+    private float swipeResist = 1;
     private float moveTime;
-
     private SpriteRenderer sr;
     private void Start() {
         //change 
@@ -71,7 +74,9 @@ public class Dot : MonoBehaviour
             if(!isMatched && !otherDot.GetComponent<Dot>().isMatched){
                 otherDot.GetComponent<Dot>().dotPosition = dotPosition;
                 dotPosition = dotPrevious;
-            }
+            }else{
+            board.DestroyMatches();
+        }
             otherDot = null;
         }
     }
@@ -85,10 +90,14 @@ public class Dot : MonoBehaviour
         CalculateAngel();
     }
     private void CalculateAngel(){
-        swipeAngle = Mathf.Atan2(
-            finalTouchPosition.y - fistTouchPosition.y,
-            finalTouchPosition.x - fistTouchPosition.x) * 180 / Mathf.PI;
-        MovePieces();
+        if (Mathf.Abs(finalTouchPosition.y - fistTouchPosition.y) > swipeResist ||
+        Mathf.Abs(finalTouchPosition.x - fistTouchPosition.x) > swipeResist)
+        {
+            swipeAngle = Mathf.Atan2(
+                finalTouchPosition.y - fistTouchPosition.y,
+                finalTouchPosition.x - fistTouchPosition.x) * 180 / Mathf.PI;
+            MovePieces();
+        }
     }
     private void MovePieces(){
         if(swipeAngle > -45 && swipeAngle <= 45 && dotPosition.x< board.size.x-1){
@@ -118,19 +127,28 @@ public class Dot : MonoBehaviour
         if(dotPosition.x>0 && dotPosition.x<board.size.x-1){
             GameObject leftDot1 = board.allDots[dotPosition.x-1, dotPosition.y];
             GameObject rightDot1 = board.allDots[dotPosition.x+1, dotPosition.y];
-            if (leftDot1.tag==gameObject.tag && rightDot1.tag==gameObject.tag){
-                leftDot1.GetComponent<Dot>().isMatched = true;
-                rightDot1.GetComponent<Dot>().isMatched = true;
-                isMatched = true;
+
+            if (leftDot1.tag != null && rightDot1.tag != null)
+            {
+                if (leftDot1.tag == gameObject.tag && rightDot1.tag == gameObject.tag)
+                {
+                    leftDot1.GetComponent<Dot>().isMatched = true;
+                    rightDot1.GetComponent<Dot>().isMatched = true;
+                    isMatched = true;
+                }
             }
         }
         if(dotPosition.y>0 && dotPosition.y<board.size.y-1){
             GameObject downDot1 = board.allDots[dotPosition.x, dotPosition.y-1];
             GameObject upDot1 = board.allDots[dotPosition.x, dotPosition.y+1];
-            if (downDot1.tag==gameObject.tag && upDot1.tag==gameObject.tag){
-                downDot1.GetComponent<Dot>().isMatched = true;
-                upDot1.GetComponent<Dot>().isMatched = true;
-                isMatched = true;
+            if (downDot1.tag != null && upDot1.tag != null)
+            {
+                if (downDot1.tag == gameObject.tag && upDot1.tag == gameObject.tag)
+                {
+                    downDot1.GetComponent<Dot>().isMatched = true;
+                    upDot1.GetComponent<Dot>().isMatched = true;
+                    isMatched = true;
+                }
             }
         }
     }

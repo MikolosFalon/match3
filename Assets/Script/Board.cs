@@ -2,10 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState{
+        wait,
+        move
+}
 public class Board : MonoBehaviour
 {
     //change later
+    public GameState currentState;
     public Vector2Int size;
+    [SerializeField]private int offSet;
     [SerializeField] private GameObject titlePrefab;
     private bgTitle[,]allTitle;
     //change later
@@ -14,6 +20,7 @@ public class Board : MonoBehaviour
     [SerializeField] private List<GameObject> dots;
 
     private void Start() {
+        currentState = GameState.move;
         allTitle = new bgTitle[size.x, size.y];
         allDots = new GameObject[size.x, size.y];
         SetUP();
@@ -24,10 +31,10 @@ public class Board : MonoBehaviour
         {
             for (int iy = 0; iy < size.y; iy++)
             {
-                Vector2 tempPosition = new Vector2(ix, iy);
-
+                Vector2 tempPosition = new Vector2(ix, iy+offSet);
+                Vector2 tempPositionBG = new Vector2(ix, iy);
                 //bg
-                GameObject bgTitle= Instantiate(titlePrefab, tempPosition, Quaternion.identity);
+                GameObject bgTitle= Instantiate(titlePrefab, tempPositionBG, Quaternion.identity);
                 bgTitle.transform.SetParent(transform);
                 bgTitle.name = "( " + ix + ", " + iy + " )";
                 
@@ -43,6 +50,7 @@ public class Board : MonoBehaviour
 
                 GameObject dot = Instantiate(
                 dots[dotToUse], tempPosition, Quaternion.identity);
+                dot.GetComponent<Dot>().DotPosition(ix,iy);
                 dot.transform.SetParent(transform);
                 dot.name = "( " + ix + ", " + iy + " )";
                 allDots[ix, iy] = dot;
@@ -59,7 +67,7 @@ public class Board : MonoBehaviour
             allDots[positionPiece.x, positionPiece.y-2].tag == piece.tag){
                 return true;
             }
-        }else {
+        }else if(positionPiece.x <= 1 || positionPiece.y <= 1){
             if (positionPiece.y > 1)
             {
                 if (allDots[positionPiece.x, positionPiece.y - 1].tag == piece.tag &&
@@ -80,7 +88,7 @@ public class Board : MonoBehaviour
         return false;
     }
     private void DestroyMatchesAt(Vector2Int positionPiece){
-        if(allDots[positionPiece.x, positionPiece.y].GetComponent<Dot>().IsMatched){
+        if(allDots[positionPiece.x, positionPiece.y].GetComponent<Dot>().isMatched){
             Destroy(allDots[positionPiece.x, positionPiece.y]);
             allDots[positionPiece.x, positionPiece.y] = null;
         }
@@ -108,7 +116,7 @@ public class Board : MonoBehaviour
                 {
                     nullCount++;
                 }else if(nullCount >0){
-                    allDots[ix, iy].GetComponent<Dot>().DotPosition(0, nullCount);
+                    allDots[ix, iy].GetComponent<Dot>().dotPosition.y-= nullCount;
                     allDots[ix, iy] = null;
                 }
             }
@@ -124,14 +132,14 @@ public class Board : MonoBehaviour
             {
                 if (allDots[ix, iy] == null)
                 { 
-                    Vector2 tempPosition = new Vector2(ix, iy);
+                    Vector2 tempPosition = new Vector2(ix, iy+offSet);
                     int dotToUse = Random.Range(0, dots.Count);
                     GameObject dot = Instantiate(
                     dots[dotToUse], tempPosition, Quaternion.identity);
                     dot.transform.SetParent(transform);
                     dot.name = "( " + ix + ", " + iy + " )";
                     allDots[ix, iy] = dot;
-
+                    dot.GetComponent<Dot>().DotPosition(ix,iy);
                 }
             }
         }
@@ -143,7 +151,7 @@ public class Board : MonoBehaviour
             {
                 if (allDots[ix, iy] != null)
                 { 
-                    if(allDots[ix, iy].GetComponent<Dot>().IsMatched){
+                    if(allDots[ix, iy].GetComponent<Dot>().isMatched){
                         return true;
                     }
                 }
@@ -160,5 +168,7 @@ public class Board : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             DestroyMatches();
         }
+        yield return new WaitForSeconds(0.5f);
+        currentState = GameState.move;
     }
 }

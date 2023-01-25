@@ -166,7 +166,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97dabc37ffde7da44a92524345695697, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
   size: {x: 7, y: 10}
+  offSet: 0
   titlePrefab: {fileID: 4317591486047209759, guid: 0caa8390a1a55c44c81655fa073a6386, type: 3}
   dots:
   - {fileID: 7279292765732320470, guid: c022acf7d8446b24795d20201fadec06, type: 3}

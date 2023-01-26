@@ -13,14 +13,17 @@ public class Board : MonoBehaviour
     public Vector2Int size;
     [SerializeField]private int offSet;
     [SerializeField] private GameObject titlePrefab;
+    [SerializeField] private GameObject DestroyEffect;
     private bgTitle[,]allTitle;
     //change later
     public GameObject[,]allDots;
+    private FindMatches findMatches;
 
     [SerializeField] private List<GameObject> dots;
 
     private void Start() {
         currentState = GameState.move;
+        findMatches=FindObjectOfType<FindMatches>();
         allTitle = new bgTitle[size.x, size.y];
         allDots = new GameObject[size.x, size.y];
         SetUP();
@@ -89,6 +92,10 @@ public class Board : MonoBehaviour
     }
     private void DestroyMatchesAt(Vector2Int positionPiece){
         if(allDots[positionPiece.x, positionPiece.y].GetComponent<Dot>().isMatched){
+            findMatches.RemoveMatches(allDots[positionPiece.x, positionPiece.y]);
+            GameObject particle= Instantiate(DestroyEffect, 
+            allDots[positionPiece.x, positionPiece.y].transform.position,Quaternion.identity);
+            Destroy(particle, 1.0f);
             Destroy(allDots[positionPiece.x, positionPiece.y]);
             allDots[positionPiece.x, positionPiece.y] = null;
         }

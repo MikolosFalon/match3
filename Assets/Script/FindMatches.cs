@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class FindMatches : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class FindMatches : MonoBehaviour
         
     }
     private IEnumerator FindAllMatchesCo(){
-
         yield return new WaitForSeconds(0.2f);
         for (int ix = 0; ix < board.size.x; ix++)
         {
@@ -37,6 +37,12 @@ public class FindMatches : MonoBehaviour
                         {
                             if (leftDot.tag == currentDot.tag && rightDot.tag == currentDot.tag)
                             {
+                                if(currentDot.GetComponent<Dot>().isRowBomb 
+                                || leftDot.GetComponent<Dot>().isRowBomb
+                                || rightDot.GetComponent<Dot>().isRowBomb){
+                                    currentMatches.Union(GetRowPieces(iy));
+                                }
+                                
                                 if(!currentMatches.Contains(leftDot)){
                                     currentMatches.Add(leftDot);
                                 }
@@ -84,5 +90,28 @@ public class FindMatches : MonoBehaviour
             }
 
         }
+    }
+    List<GameObject> GetColumnPieces(int column){
+        List<GameObject> dots = new List<GameObject>();
+        for (int i = 0; i < board.size.y; i++)
+        {
+            if(board.allDots[column, i] !=null){
+                dots.Add(board.allDots[column, i]);
+                board.allDots[column, i].GetComponent<Dot>().isMatched = true;
+            }
+        }
+        return dots;
+    }
+
+    List<GameObject> GetRowPieces(int row){
+        List<GameObject> dots = new List<GameObject>();
+        for (int i = 0; i < board.size.x; i++)
+        {
+            if(board.allDots[i, row] !=null){
+                dots.Add(board.allDots[i, row]);
+                board.allDots[i, row].GetComponent<Dot>().isMatched = true;
+            }
+        }
+        return dots;
     }
 }

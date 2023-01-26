@@ -113,6 +113,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dotPosition: {x: 0, y: 0}
-  TargetPosition: {x: 0, y: 0}
-  swipeAngle: 0
-  moveTime: 1
+  isMatched: 0
+  rowArrow: {fileID: 8930709817947251474, guid: 973b2cbe8517ed946b15913eb022739d, type: 3}
+  columnArrow: {fileID: 722860832142915807, guid: 12cd7fa57b6270e4e8ab9e07a2523297, type: 3}

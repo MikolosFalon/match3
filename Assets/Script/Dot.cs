@@ -13,16 +13,24 @@ public class Dot : MonoBehaviour
     private Vector2Int dotPrevious;
     private Vector2Int TargetPosition;
     public bool isMatched = false;
+
     private Color matchedColor;
+    private FindMatches findMatches;
     private Board board;
     private GameObject otherDot;
 
     private Vector2 fistTouchPosition;
     private Vector2 finalTouchPosition;
     private Vector2 TempPosition;
-
+    //swipe stuff
     private float swipeAngle = 0;
     private float swipeResist = 1;
+    //powerUp stuff
+    public bool isColumnBomb;
+    public bool isRowBomb;
+    [SerializeField] private GameObject rowArrow;
+    [SerializeField] private GameObject columnArrow;
+
     private float moveTime;
     private SpriteRenderer sr;
     private void Start() {
@@ -31,14 +39,35 @@ public class Dot : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         matchedColor = new Color(1, 1, 1, 0.2f);
         board = FindObjectOfType<Board>();
+        findMatches=FindObjectOfType<FindMatches>();
         //TargetPosition =new Vector2Int((int)transform.position.x, (int)transform.position.y);
         //dotPosition = TargetPosition;
         //dotPrevious = dotPosition;
         moveTime = 0.6f;
+
+        isColumnBomb = false;
+        isRowBomb = false;
     }
 
+    //testing
+    
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(1)) {
+            isColumnBomb = true;
+            GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity);
+            arrow.transform.SetParent(transform);
+        }
+        if (Input.GetMouseButtonDown(0)) {
+            isRowBomb = true;
+            GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity);
+            arrow.transform.SetParent(transform);
+        }
+    }
+    
+
     private void Update() {
-        FindMatches();
+        //FindMatches();
         if (isMatched)
         {
             sr.color = matchedColor;
@@ -53,6 +82,7 @@ public class Dot : MonoBehaviour
             if(board.allDots[dotPosition.x, dotPosition.y] != this.gameObject){
                 board.allDots[dotPosition.x, dotPosition.y] = this.gameObject;
             }
+            findMatches.FindAllMatched();
         }else{
             //directly set the position
             TempPosition = new Vector2(TargetPosition.x, transform.position.y);
@@ -66,6 +96,7 @@ public class Dot : MonoBehaviour
             if(board.allDots[dotPosition.x, dotPosition.y] != this.gameObject){
                 board.allDots[dotPosition.x, dotPosition.y] = this.gameObject;
             }
+            findMatches.FindAllMatched();
         }else{
             //directly set the position
             TempPosition = new Vector2(transform.position.x, TargetPosition.y);

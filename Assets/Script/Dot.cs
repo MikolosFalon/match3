@@ -17,7 +17,7 @@ public class Dot : MonoBehaviour
     private Color matchedColor;
     private FindMatches findMatches;
     private Board board;
-    private GameObject otherDot;
+    public GameObject otherDot;
 
     private Vector2 fistTouchPosition;
     private Vector2 finalTouchPosition;
@@ -53,25 +53,31 @@ public class Dot : MonoBehaviour
     
     private void OnMouseOver()
     {
+        /*
         if (Input.GetMouseButtonDown(1)) {
             isColumnBomb = true;
             GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity);
             arrow.transform.SetParent(transform);
         }
-        if (Input.GetMouseButtonDown(0)) {
+        */
+        //
+        if (Input.GetMouseButtonDown(1)) {
             isRowBomb = true;
             GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity);
             arrow.transform.SetParent(transform);
         }
+        //
     }
     
 
     private void Update() {
         //FindMatches();
+        /*
         if (isMatched)
         {
             sr.color = matchedColor;
         }
+        */
         TargetPosition =dotPosition;
         //change later (copy code )
         //x
@@ -111,11 +117,12 @@ public class Dot : MonoBehaviour
                 otherDot.GetComponent<Dot>().dotPosition = dotPosition;
                 dotPosition = dotPrevious;
                 yield return new WaitForSeconds(0.5f);
+                board.currentDot = null;
                 board.currentState = GameState.move;
             }else{
                 board.DestroyMatches();
             }
-            otherDot = null;
+            //otherDot = null;
         }
     }
     private void OnMouseDown()
@@ -139,6 +146,7 @@ public class Dot : MonoBehaviour
                 finalTouchPosition.x - fistTouchPosition.x) * 180 / Mathf.PI;
             MovePieces();
             board.currentState = GameState.wait;
+            board.currentDot = this;
         }else{
             board.currentState = GameState.move;
         }
@@ -171,7 +179,7 @@ public class Dot : MonoBehaviour
         }
         StartCoroutine(CheckMoveCo());
     }
-    void FindMatches(){
+    private void FindMatches(){
         if(dotPosition.x>0 && dotPosition.x<board.size.x-1){
             GameObject leftDot1 = board.allDots[dotPosition.x-1, dotPosition.y];
             GameObject rightDot1 = board.allDots[dotPosition.x+1, dotPosition.y];
@@ -199,5 +207,15 @@ public class Dot : MonoBehaviour
                 }
             }
         }
+    }
+    public void MakeRowBomb(){
+        isRowBomb = true;
+        GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity);
+        arrow.transform.SetParent(transform);
+    }
+    public void MakeColumnBomb(){
+        isColumnBomb = true;
+        GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity);
+        arrow.transform.SetParent(transform);
     }
 }

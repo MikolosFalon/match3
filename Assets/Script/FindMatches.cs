@@ -6,7 +6,7 @@ using System.Linq;
 public class FindMatches : MonoBehaviour
 {
     private Board board;
-    [SerializeField] private List<GameObject> currentMatches;
+    public List<GameObject> currentMatches;
     private void Start() {
         currentMatches = new List<GameObject>();
         board = FindObjectOfType<Board>();
@@ -42,7 +42,16 @@ public class FindMatches : MonoBehaviour
                                 || rightDot.GetComponent<Dot>().isRowBomb){
                                     currentMatches.Union(GetRowPieces(iy));
                                 }
-                                
+                                if(currentDot.GetComponent<Dot>().isColumnBomb){
+                                    currentMatches.Union(GetColumnPieces(ix));
+                                }
+                                if(leftDot.GetComponent<Dot>().isColumnBomb){
+                                    currentMatches.Union(GetColumnPieces(ix-1));
+                                }
+                                if(rightDot.GetComponent<Dot>().isColumnBomb){
+                                    currentMatches.Union(GetColumnPieces(ix+1));
+                                }
+
                                 if(!currentMatches.Contains(leftDot)){
                                     currentMatches.Add(leftDot);
                                 }
@@ -69,6 +78,21 @@ public class FindMatches : MonoBehaviour
                         {
                             if (DownDot.tag == currentDot.tag && UpDot.tag == currentDot.tag)
                             {
+                                if(currentDot.GetComponent<Dot>().isColumnBomb 
+                                || DownDot.GetComponent<Dot>().isColumnBomb
+                                || UpDot.GetComponent<Dot>().isColumnBomb){
+                                    currentMatches.Union(GetColumnPieces(ix));
+                                }
+                                if(currentDot.GetComponent<Dot>().isRowBomb){
+                                    currentMatches.Union(GetRowPieces(iy));
+                                }
+                                if(DownDot.GetComponent<Dot>().isRowBomb){
+                                    currentMatches.Union(GetRowPieces(iy-1));
+                                }
+                                if(UpDot.GetComponent<Dot>().isRowBomb){
+                                    currentMatches.Union(GetRowPieces(iy+1));
+                                }
+                                
                                 if(!currentMatches.Contains(DownDot)){
                                     currentMatches.Add(DownDot);
                                 }
@@ -113,5 +137,29 @@ public class FindMatches : MonoBehaviour
             }
         }
         return dots;
+    }
+
+    public void CheckBombs(){
+        // did the player move something
+        if(board.currentDot != null){
+            //is the piece they moved matched
+            if(board.currentDot.isMatched){
+                //make it unmatched
+                board.currentDot.isMatched = false;
+                //decide what kind of bomb to make
+                int typeOfBomb = Random.Range(0, 100);
+                if(typeOfBomb < 50){
+                    //make a row bomb
+                    board.currentDot.MakeRowBomb();
+                }else{
+                    //make a column bomb
+                    board.currentDot.MakeColumnBomb();
+                }
+            }
+            //is the other piece matcher
+            else if(board.currentDot.otherDot != null){
+                
+            }
+        }
     }
 }

@@ -23,7 +23,7 @@ public class Dot : MonoBehaviour
     private Vector2 finalTouchPosition;
     private Vector2 TempPosition;
     //swipe stuff
-    private float swipeAngle = 0;
+    public float swipeAngle = 0;
     private float swipeResist = 1;
     //powerUp stuff
     public bool isColumnBomb;

@@ -114,5 +114,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotPosition: {x: 0, y: 0}
   isMatched: 0
+  otherDot: {fileID: 0}
+  swipeAngle: 0
+  isColorBomb: 0
+  isColumnBomb: 0
+  isRowBomb: 0
   rowArrow: {fileID: 8930709817947251474, guid: 973b2cbe8517ed946b15913eb022739d, type: 3}
   columnArrow: {fileID: 722860832142915807, guid: 12cd7fa57b6270e4e8ab9e07a2523297, type: 3}
+  colorBomb: {fileID: 2145657848252237283, guid: 57913174a331940469c89994ce3df0f9, type: 3}

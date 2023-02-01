@@ -26,10 +26,12 @@ public class Dot : MonoBehaviour
     public float swipeAngle = 0;
     private float swipeResist = 1;
     //powerUp stuff
+    public bool isColorBomb;
     public bool isColumnBomb;
     public bool isRowBomb;
     [SerializeField] private GameObject rowArrow;
     [SerializeField] private GameObject columnArrow;
+    [SerializeField] private GameObject colorBomb;
 
     private float moveTime;
     private SpriteRenderer sr;
@@ -53,20 +55,11 @@ public class Dot : MonoBehaviour
     
     private void OnMouseOver()
     {
-        /*
         if (Input.GetMouseButtonDown(1)) {
-            isColumnBomb = true;
-            GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity);
-            arrow.transform.SetParent(transform);
+            isColorBomb = true;
+            GameObject color = Instantiate(colorBomb, transform.position, Quaternion.identity);
+            color.transform.SetParent(transform);
         }
-        */
-        //
-        if (Input.GetMouseButtonDown(1)) {
-            isRowBomb = true;
-            GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity);
-            arrow.transform.SetParent(transform);
-        }
-        //
     }
     
 
@@ -111,6 +104,15 @@ public class Dot : MonoBehaviour
     }
 
     private IEnumerator CheckMoveCo(){
+        if(isColorBomb){
+            //this piece is color bomb, and the other piece is the color to destroy
+            findMatches.MatchPiecesOfColor(otherDot.tag);
+            isMatched = true;
+        }else if(otherDot.GetComponent<Dot>().isColorBomb){
+            //the other piece is a color bomb, and this piece has the color to destroy
+            findMatches.MatchPiecesOfColor(this.gameObject.tag);
+            otherDot.GetComponent<Dot>().isMatched = true;
+        }
         yield return new WaitForSeconds(0.5f);
         if(otherDot != null){
             if(!isMatched && !otherDot.GetComponent<Dot>().isMatched){

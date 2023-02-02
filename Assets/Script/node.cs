@@ -14,12 +14,13 @@ public class node
 
     FindMatches : private List<GameObject> IsRowBomb
     using collection
+    using foreach
 
     x column
     y row
     
     
-    next 21 (24) 10
+   
     
     
     

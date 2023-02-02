@@ -29,6 +29,8 @@ public class Dot : MonoBehaviour
     public bool isColorBomb;
     public bool isColumnBomb;
     public bool isRowBomb;
+    public bool isAdjacentBomb;
+    [SerializeField] private GameObject AdjacentMarker;
     [SerializeField] private GameObject rowArrow;
     [SerializeField] private GameObject columnArrow;
     [SerializeField] private GameObject colorBomb;
@@ -49,6 +51,8 @@ public class Dot : MonoBehaviour
 
         isColumnBomb = false;
         isRowBomb = false;
+        isColorBomb = false;
+        isAdjacentBomb = false;
     }
 
     //testing
@@ -56,9 +60,11 @@ public class Dot : MonoBehaviour
     private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(1)) {
-            isColorBomb = true;
-            GameObject color = Instantiate(colorBomb, transform.position, Quaternion.identity);
-            color.transform.SetParent(transform);
+            isAdjacentBomb = true;
+            GameObject marker = Instantiate(
+                AdjacentMarker, transform.position, Quaternion.identity);
+            marker.transform.SetParent(transform);
+
         }
     }
     

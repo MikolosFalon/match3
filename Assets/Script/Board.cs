@@ -6,6 +6,19 @@ public enum GameState{
         wait,
         move
 }
+
+public enum TileKind{
+    breakable,
+    Blank,
+    Normal
+}
+
+[System.Serializable]
+public class TileType{
+    public Vector2Int tilePosition;
+    public TileKind tileKind;
+}
+
 public class Board : MonoBehaviour
 {
     //change later
@@ -15,7 +28,8 @@ public class Board : MonoBehaviour
     [SerializeField] private GameObject titlePrefab;
     [SerializeField] private List<GameObject> dots;
     [SerializeField] private GameObject DestroyEffect;
-    private bgTitle[,]allTitle;
+    [SerializeField] private List<TileType> boardLayout;
+    private bool[,]blankSpaces;
     //change later
     public GameObject[,]allDots;
     public Dot currentDot;
@@ -25,68 +39,104 @@ public class Board : MonoBehaviour
     private void Start() {
         currentState = GameState.move;
         findMatches=FindObjectOfType<FindMatches>();
-        allTitle = new bgTitle[size.x, size.y];
+        blankSpaces = new bool[size.x, size.y];
         allDots = new GameObject[size.x, size.y];
         SetUP();
     }
 
+    public void GenerateBlankSpaces(){
+        for (int i = 0; i < boardLayout.Count; i++)
+        {
+            if(boardLayout[i].tileKind == TileKind.Blank){
+                blankSpaces[boardLayout[i].tilePosition.x, boardLayout[i].tilePosition.y] = true;
+            }
+        }
+    }
+
     private void SetUP(){
+        GenerateBlankSpaces();
         for (int ix = 0; ix < size.x; ix++)
         {
             for (int iy = 0; iy < size.y; iy++)
             {
-                Vector2 tempPosition = new Vector2(ix, iy+offSet);
-                Vector2 tempPositionBG = new Vector2(ix, iy);
-                //bg
-                GameObject bgTitle= Instantiate(titlePrefab, tempPositionBG, Quaternion.identity);
-                bgTitle.transform.SetParent(transform);
-                bgTitle.name = "( " + ix + ", " + iy + " )";
-                
-                //dots
-                int dotToUse = Random.Range(0, dots.Count);
-                int maxIterations = 0;
+                if (!blankSpaces[ix, iy])
+                {
+                    Vector2 tempPosition = new Vector2(ix, iy + offSet);
+                    Vector2 tempPositionBG = new Vector2(ix, iy);
+                    //bg
+                    GameObject bgTitle = Instantiate(
+                        titlePrefab, tempPositionBG, Quaternion.identity);
+                    bgTitle.transform.SetParent(transform);
+                    bgTitle.name = "( " + ix + ", " + iy + " )";
 
-                while(MatchesAt(new Vector2Int(ix,iy),dots[dotToUse]) && maxIterations < 100){
-                    dotToUse = Random.Range(0, dots.Count);
-                    maxIterations++;
+                    //dots
+                    int dotToUse = Random.Range(0, dots.Count);
+                    int maxIterations = 0;
+
+                    while (MatchesAt(new Vector2Int(ix, iy), dots[dotToUse]) && 
+                        maxIterations < 100)
+                    {
+                        dotToUse = Random.Range(0, dots.Count);
+                        maxIterations++;
+                    }
+                    maxIterations = 0;
+
+                    GameObject dot = Instantiate(
+                    dots[dotToUse], tempPosition, Quaternion.identity);
+                    dot.GetComponent<Dot>().DotPosition(ix, iy);
+                    dot.transform.SetParent(transform);
+                    dot.name = "( " + ix + ", " + iy + " )";
+                    allDots[ix, iy] = dot;
                 }
-                maxIterations = 0;
-
-                GameObject dot = Instantiate(
-                dots[dotToUse], tempPosition, Quaternion.identity);
-                dot.GetComponent<Dot>().DotPosition(ix,iy);
-                dot.transform.SetParent(transform);
-                dot.name = "( " + ix + ", " + iy + " )";
-                allDots[ix, iy] = dot;
             }
         }
     }
     private bool MatchesAt(Vector2Int positionPiece, GameObject piece){
         if(positionPiece.x > 1 && positionPiece.y > 1){
-            if(allDots[positionPiece.x-1, positionPiece.y].tag == piece.tag &&
-            allDots[positionPiece.x-2, positionPiece.y].tag == piece.tag){
-                return true;
+            if (allDots[positionPiece.x - 1, positionPiece.y] != null &&
+            allDots[positionPiece.x - 2, positionPiece.y] != null)
+            {
+                if (allDots[positionPiece.x - 1, positionPiece.y].tag == piece.tag &&
+                allDots[positionPiece.x - 2, positionPiece.y].tag == piece.tag)
+                {
+                    return true;
+                }
             }
-            if(allDots[positionPiece.x, positionPiece.y-1].tag == piece.tag &&
-            allDots[positionPiece.x, positionPiece.y-2].tag == piece.tag){
-                return true;
+             
+            if (allDots[positionPiece.x, positionPiece.y - 1] != null &&
+            allDots[positionPiece.x, positionPiece.y - 2] != null)
+            {
+                if (allDots[positionPiece.x, positionPiece.y - 1].tag == piece.tag &&
+                allDots[positionPiece.x, positionPiece.y - 2].tag == piece.tag)
+                {
+                    return true;
+                }
             }
         }else if(positionPiece.x <= 1 || positionPiece.y <= 1){
             if (positionPiece.y > 1)
             {
-                if (allDots[positionPiece.x, positionPiece.y - 1].tag == piece.tag &&
-            allDots[positionPiece.x, positionPiece.y - 2].tag == piece.tag)
+                if ((allDots[positionPiece.x, positionPiece.y - 1] != null &&
+                allDots[positionPiece.x, positionPiece.y - 2] != null))
                 {
-                    return true;
+                    if (allDots[positionPiece.x, positionPiece.y - 1].tag == piece.tag &&
+                allDots[positionPiece.x, positionPiece.y - 2].tag == piece.tag)
+                    {
+                        return true;
+                    }
                 }
             }
 
             if (positionPiece.x > 1)
             {
-            if(allDots[positionPiece.x-1, positionPiece.y].tag == piece.tag &&
-            allDots[positionPiece.x-2, positionPiece.y].tag == piece.tag){
-                return true;
-            }
+                if ((allDots[positionPiece.x, positionPiece.y - 1] != null &&
+                allDots[positionPiece.x, positionPiece.y - 2] != null))
+                {
+                    if (allDots[positionPiece.x - 1, positionPiece.y].tag == piece.tag &&
+                    allDots[positionPiece.x - 2, positionPiece.y].tag == piece.tag)
+                    {
+                        return true;
+                    }
+                }
             }
         }
         return false;

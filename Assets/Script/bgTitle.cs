@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class bgTitle : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> dots;
+    public int hitPoints;
+    private SpriteRenderer sr;
     private void Start() {
-        //Initialize();
+        sr = GetComponent<SpriteRenderer>();
     }
-   private void Initialize(){
-        int dotToUse = Random.Range(0, dots.Count);
-        GameObject dot = Instantiate(dots[dotToUse], transform.position, Quaternion.identity);
-        dot.transform.SetParent(transform);
-        dot.name = name;
+
+    public void TakeDamage(int damage) {
+        hitPoints -= damage;
+        MakeLighter();
+        if(hitPoints <= 0){
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void MakeLighter(){
+        //take the current color
+        Color color = sr.color;
+        //Get the current color`s alpha value and cut it in half.
+        float newAlpha = color.a*0.5f;
+        sr.color = new Color(color.r, color.g, color.b, newAlpha);
     }
 }

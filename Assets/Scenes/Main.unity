@@ -171,6 +171,7 @@ MonoBehaviour:
   size: {x: 7, y: 10}
   offSet: 0
   titlePrefab: {fileID: 4317591486047209759, guid: 0caa8390a1a55c44c81655fa073a6386, type: 3}
+  BreakableTilePrefab: {fileID: 4667062788000644675, guid: 1bd5bfb6af0d72e42a72463f78e90f66, type: 3}
   dots:
   - {fileID: 7279292765732320470, guid: c022acf7d8446b24795d20201fadec06, type: 3}
   - {fileID: 7513281997675930763, guid: 045fe0377aa3dca4a874d7af0ef17a79, type: 3}
@@ -195,6 +196,18 @@ MonoBehaviour:
     tileKind: 1
   - tilePosition: {x: 5, y: 4}
     tileKind: 1
+  - tilePosition: {x: 3, y: 4}
+    tileKind: 1
+  - tilePosition: {x: 2, y: 4}
+    tileKind: 1
+  - tilePosition: {x: 1, y: 4}
+    tileKind: 1
+  - tilePosition: {x: 1, y: 5}
+    tileKind: 0
+  - tilePosition: {x: 1, y: 6}
+    tileKind: 0
+  - tilePosition: {x: 1, y: 7}
+    tileKind: 0
   currentDot: {fileID: 0}
 --- !u!114 &1372803266
 MonoBehaviour:
@@ -246,7 +259,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.8113208, g: 0.8074938, b: 0.8074938, a: 0}
+  m_BackGroundColor: {r: 0.254717, g: 0.2535155, b: 0.2535155, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

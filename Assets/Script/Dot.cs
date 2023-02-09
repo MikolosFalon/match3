@@ -164,10 +164,15 @@ public class Dot : MonoBehaviour
      private void MovePiecesActual(Vector2Int direction){
         otherDot = board.allDots[dotPosition.x + direction.x, dotPosition.y+direction.y];
         dotPrevious = dotPosition;
-        otherDot.GetComponent<Dot>().dotPosition += -direction;
-        dotPosition += direction;
-        StartCoroutine(CheckMoveCo());
-     }
+        if (otherDot != null)
+        {
+            otherDot.GetComponent<Dot>().dotPosition += -direction;
+            dotPosition += direction;
+            StartCoroutine(CheckMoveCo());
+        }else{
+            board.currentState = GameState.move;
+        }
+    }
 
     private void MovePieces(){
         if(swipeAngle > -45 && swipeAngle <= 45 && dotPosition.x< board.size.x-1){

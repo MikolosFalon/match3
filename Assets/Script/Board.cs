@@ -26,10 +26,12 @@ public class Board : MonoBehaviour
     public Vector2Int size;
     [SerializeField]private int offSet;
     [SerializeField] private GameObject titlePrefab;
+    [SerializeField] private GameObject BreakableTilePrefab;
     [SerializeField] private List<GameObject> dots;
     [SerializeField] private GameObject DestroyEffect;
     [SerializeField] private List<TileType> boardLayout;
-    private bool[,]blankSpaces;
+    private bool[,] blankSpaces;
+    private bgTitle[,] breakableTiles;
     //change later
     public GameObject[,]allDots;
     public Dot currentDot;
@@ -37,7 +39,8 @@ public class Board : MonoBehaviour
 
 
     private void Start() {
-        currentState = GameState.move;
+        breakableTiles = new bgTitle[size.x, size.y];
+        //currentState = GameState.move;
         findMatches=FindObjectOfType<FindMatches>();
         blankSpaces = new bool[size.x, size.y];
         allDots = new GameObject[size.x, size.y];
@@ -53,8 +56,26 @@ public class Board : MonoBehaviour
         }
     }
 
+    public void GenerateBreakableTiles(){
+        //look at all the tiles in the layout
+        for (int i = 0; i < boardLayout.Count; i++)
+        {
+            //if a tile is a "Jelly" tile
+            if(boardLayout[i].tileKind==TileKind.breakable){
+                //create a "Jelly" tile at that position
+                Vector2 tempPosition = new Vector2(boardLayout[i].tilePosition.x,
+                boardLayout[i].tilePosition.y);
+                GameObject tile = Instantiate(
+                    BreakableTilePrefab, tempPosition, Quaternion.identity);
+                breakableTiles[boardLayout[i].tilePosition.x,
+                boardLayout[i].tilePosition.y] = tile.GetComponent<bgTitle>();
+            }
+        }
+    }
+
     private void SetUP(){
         GenerateBlankSpaces();
+        GenerateBreakableTiles();
         for (int ix = 0; ix < size.x; ix++)
         {
             for (int iy = 0; iy < size.y; iy++)
@@ -128,8 +149,8 @@ public class Board : MonoBehaviour
 
             if (positionPiece.x > 1)
             {
-                if ((allDots[positionPiece.x, positionPiece.y - 1] != null &&
-                allDots[positionPiece.x, positionPiece.y - 2] != null))
+                if ((allDots[positionPiece.x-1, positionPiece.y] != null &&
+                allDots[positionPiece.x-2, positionPiece.y] != null))
                 {
                     if (allDots[positionPiece.x - 1, positionPiece.y].tag == piece.tag &&
                     allDots[positionPiece.x - 2, positionPiece.y].tag == piece.tag)
@@ -212,7 +233,14 @@ public class Board : MonoBehaviour
             if(findMatches.currentMatches.Count >=4){
                 CheckToMakeBombs();
             }
-
+            // Does a tile need to break
+            if(breakableTiles[positionPiece.x,positionPiece.y] != null){
+                //if it does, give damage
+                breakableTiles[positionPiece.x, positionPiece.y].TakeDamage(1);
+                if(breakableTiles[positionPiece.x, positionPiece.y].hitPoints <=0){
+                    breakableTiles[positionPiece.x, positionPiece.y] = null;
+                }
+            }
             GameObject particle= Instantiate(DestroyEffect, 
             allDots[positionPiece.x, positionPiece.y].transform.position,Quaternion.identity);
             Destroy(particle, 1.0f);
@@ -232,9 +260,39 @@ public class Board : MonoBehaviour
             }
         }
         findMatches.currentMatches.Clear();
-        StartCoroutine(RecreateRowCo());
+        StartCoroutine(DecreaseRowCo2());
     }
-    private IEnumerator RecreateRowCo(){
+    private IEnumerator DecreaseRowCo2(){
+   
+        for (int ix = 0; ix < size.x; ix++)
+        {
+            for (int iy = 0; iy < size.y; iy++)
+            {
+                //if the current spot isn`t blank and empty ...
+                if (!blankSpaces[ix, iy] && allDots[ix, iy] == null)
+                {
+                    //loop from the space above to the top of the column
+                    for (int k = iy + 1; k < size.y; k++)
+                    {
+                        //if a dot is found...
+                        if (allDots[ix, k] != null)
+                        {
+                            //move that dot to this empty space
+                            allDots[ix, k].GetComponent<Dot>().dotPosition.y = iy;
+                            //set that spot to be null
+                            allDots[ix, k] = null;
+                            //break out of the loop
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        yield return new WaitForSeconds(0.4f);
+        StartCoroutine(FillBoardCo());
+    }
+
+    private IEnumerator DecreaseRowCo(){
         int nullCount = 0;
         for (int ix = 0; ix < size.x; ix++)
         {
@@ -258,7 +316,7 @@ public class Board : MonoBehaviour
         {
             for (int iy = 0; iy < size.y; iy++)
             {
-                if (allDots[ix, iy] == null)
+                if (allDots[ix, iy] == null && !blankSpaces[ix,iy])
                 { 
                     Vector2 tempPosition = new Vector2(ix, iy+offSet);
                     int dotToUse = Random.Range(0, dots.Count);

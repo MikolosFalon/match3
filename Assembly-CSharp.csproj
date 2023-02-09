@@ -36,11 +36,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Script\FindMatches.cs" />
      <Compile Include="Assets\Script\Board.cs" />
      <Compile Include="Assets\Script\Dot.cs" />
      <Compile Include="Assets\Script\node.cs" />
      <Compile Include="Assets\Script\bgTitle.cs" />
-     <Compile Include="Assets\Script\FindMatches.cs" />
+     <Compile Include="Assets\Script\CameraScaler.cs" />
     <Reference Include="UnityEngine">
         <HintPath>D:\Unity3d\Editor\2020.3.41f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

@@ -20,9 +20,9 @@ public class node
     y row
     
     
-   
     
-    
+   board : DecreaseRowCo2
+    bad name
     
     
     

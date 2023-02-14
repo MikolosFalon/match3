@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 1372803264}
   - component: {fileID: 1372803265}
   - component: {fileID: 1372803266}
+  - component: {fileID: 1372803267}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -222,6 +223,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMatches: []
+--- !u!114 &1372803267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372803263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef4c24b3f4f0994284d7857e29a85e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hintDelay: 3
+  hintParticle: {fileID: 4262372184918416277, guid: 7a0208079219cda42afd3cc477912e5b, type: 3}
+  currentHint: {fileID: 0}
 --- !u!1 &1447718029
 GameObject:
   m_ObjectHideFlags: 0

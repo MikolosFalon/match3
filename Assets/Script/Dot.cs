@@ -14,6 +14,7 @@ public class Dot : MonoBehaviour
     private Vector2Int TargetPosition;
     public bool isMatched = false;
 
+    private HitsManager hitsManager;
     private Color matchedColor;
     private FindMatches findMatches;
     private Board board;
@@ -42,11 +43,11 @@ public class Dot : MonoBehaviour
         //need singleton
         sr = GetComponent<SpriteRenderer>();
         matchedColor = new Color(1, 1, 1, 0.2f);
+
+        hitsManager = FindObjectOfType<HitsManager>();
         board = FindObjectOfType<Board>();
         findMatches=FindObjectOfType<FindMatches>();
-        //TargetPosition =new Vector2Int((int)transform.position.x, (int)transform.position.y);
-        //dotPosition = TargetPosition;
-        //dotPrevious = dotPosition;
+
         moveTime = 0.6f;
 
         isColumnBomb = false;
@@ -71,13 +72,6 @@ public class Dot : MonoBehaviour
     
 
     private void Update() {
-        //FindMatches();
-        /*
-        if (isMatched)
-        {
-            sr.color = matchedColor;
-        }
-        */
         TargetPosition =dotPosition;
         //change later (copy code )
         //x
@@ -131,11 +125,15 @@ public class Dot : MonoBehaviour
             }else{
                 board.DestroyMatches();
             }
-            //otherDot = null;
         }
     }
     private void OnMouseDown()
     {
+        //Destroy the hint
+        if (hitsManager != null)
+        {
+            hitsManager.DestroyHint();
+        }
         if (board.currentState == GameState.move)
         {
             fistTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

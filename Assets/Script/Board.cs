@@ -36,12 +36,16 @@ public class Board : MonoBehaviour
     public GameObject[,]allDots;
     public Dot currentDot;
     private FindMatches findMatches;
+    [SerializeField] private int basePieceValue = 20;
+    private int streakValue = 1;
+    private ScoreManager scoreManager;
 
 
     private void Start() {
         breakableTiles = new bgTitle[size.x, size.y];
         //currentState = GameState.move;
         findMatches=FindObjectOfType<FindMatches>();
+        scoreManager = FindObjectOfType<ScoreManager>();
         blankSpaces = new bool[size.x, size.y];
         allDots = new GameObject[size.x, size.y];
         SetUP();
@@ -245,6 +249,7 @@ public class Board : MonoBehaviour
             allDots[positionPiece.x, positionPiece.y].transform.position,Quaternion.identity);
             Destroy(particle, 1.0f);
             Destroy(allDots[positionPiece.x, positionPiece.y]);
+            scoreManager.IncreaseScore(basePieceValue * streakValue);
             allDots[positionPiece.x, positionPiece.y] = null;
         }
     }
@@ -351,6 +356,7 @@ public class Board : MonoBehaviour
 
         while (MatchesOnBoard())
         {
+            streakValue++;
             yield return new WaitForSeconds(0.5f);
             DestroyMatches();
         }
@@ -361,6 +367,7 @@ public class Board : MonoBehaviour
             ShuffleBoard();
         }
         currentState = GameState.move;
+        streakValue = 1;
     }
 
     private void SwitchPieces(Vector2Int piecesPosition, Vector2Int direction){

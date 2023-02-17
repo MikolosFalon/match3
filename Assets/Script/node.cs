@@ -24,6 +24,8 @@ public class node
    board : DecreaseRowCo2
     bad name
     
+    part31 move help 
+    
     
     
     

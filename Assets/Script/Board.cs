@@ -39,7 +39,7 @@ public class Board : MonoBehaviour
     [SerializeField] private int basePieceValue = 20;
     private int streakValue = 1;
     private ScoreManager scoreManager;
-
+    private float refillDelay = 0.5f;
 
     private void Start() {
         breakableTiles = new bgTitle[size.x, size.y];
@@ -293,7 +293,7 @@ public class Board : MonoBehaviour
                 }
             }
         }
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(refillDelay*0.5f);
         StartCoroutine(FillBoardCo());
     }
 
@@ -313,7 +313,7 @@ public class Board : MonoBehaviour
             }
             nullCount = 0;
         }
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(refillDelay*0.5f);
         StartCoroutine(FillBoardCo());
     }
     private void RefillBoard(){
@@ -325,6 +325,15 @@ public class Board : MonoBehaviour
                 { 
                     Vector2 tempPosition = new Vector2(ix, iy+offSet);
                     int dotToUse = Random.Range(0, dots.Count);
+                    int maxIterations = 0;
+                    while ( MatchesAt( new Vector2Int(ix,iy),dots[dotToUse]) && 
+                    maxIterations < 100)
+                    {
+                        maxIterations++;
+                        dotToUse = Random.Range(0, dots.Count);
+                    }
+                    maxIterations = 0;
+
                     GameObject dot = Instantiate(
                     dots[dotToUse], tempPosition, Quaternion.identity);
                     dot.transform.SetParent(transform);
@@ -352,20 +361,20 @@ public class Board : MonoBehaviour
     }
     private IEnumerator FillBoardCo(){
         RefillBoard();
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(refillDelay);
 
         while (MatchesOnBoard())
         {
             streakValue++;
-            yield return new WaitForSeconds(0.5f);
             DestroyMatches();
+            yield return new WaitForSeconds(2*refillDelay);
         }
         findMatches.currentMatches.Clear();
         currentDot = null;
-        yield return new WaitForSeconds(0.5f);
         if(IsDeadlocked()){
             ShuffleBoard();
         }
+        yield return new WaitForSeconds(refillDelay);
         currentState = GameState.move;
         streakValue = 1;
     }
@@ -455,7 +464,8 @@ public class Board : MonoBehaviour
         return true;
     }
 
-    private void ShuffleBoard(){
+    private IEnumerator ShuffleBoard(){
+        yield return new WaitForSeconds(0.5f);
         //create a list of game objects
         List<GameObject> newBoard = new List<GameObject>();
         for (int ix = 0; ix < size.x; ix++)
@@ -468,6 +478,7 @@ public class Board : MonoBehaviour
                 }
             }
         }
+        yield return new WaitForSeconds(0.5f);
         // for every spot on the board
         for (int ix = 0; ix < size.x; ix++)
         {

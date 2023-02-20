@@ -240,8 +240,9 @@ public class Dot : MonoBehaviour
     }
     public void MakeColorBomb(){
         isColorBomb = true;
-            GameObject marker = Instantiate(
-                colorBomb, transform.position, Quaternion.identity);
+        GameObject marker = Instantiate(
+            colorBomb, transform.position, Quaternion.identity);
             marker.transform.SetParent(transform);
+        gameObject.tag = "Color";
     }
 }

@@ -39,13 +39,16 @@ public class Board : MonoBehaviour
     [SerializeField] private int basePieceValue = 20;
     private int streakValue = 1;
     private ScoreManager scoreManager;
+    private SoundManager soundManager;
     private float refillDelay = 0.5f;
+    public List<int> scoreGoals;
 
     private void Start() {
         breakableTiles = new bgTitle[size.x, size.y];
         //currentState = GameState.move;
         findMatches=FindObjectOfType<FindMatches>();
         scoreManager = FindObjectOfType<ScoreManager>();
+        soundManager = FindObjectOfType<SoundManager>();
         blankSpaces = new bool[size.x, size.y];
         allDots = new GameObject[size.x, size.y];
         SetUP();
@@ -244,6 +247,10 @@ public class Board : MonoBehaviour
                 if(breakableTiles[positionPiece.x, positionPiece.y].hitPoints <=0){
                     breakableTiles[positionPiece.x, positionPiece.y] = null;
                 }
+            }
+            //does the sound manager
+            if(soundManager !=null){
+                soundManager.PlayRandomDestroyNoise();
             }
             GameObject particle= Instantiate(DestroyEffect, 
             allDots[positionPiece.x, positionPiece.y].transform.position,Quaternion.identity);

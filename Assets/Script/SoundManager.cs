@@ -9,8 +9,7 @@ public class SoundManager : MonoBehaviour
     public void PlayRandomDestroyNoise(){
         //Choose a random number
         int clipToPlay = Random.Range(0, destroyNoise.Count);
-        //stop if play
-        destroyNoise[clipToPlay].Stop();
+
         //play that clip
         destroyNoise[clipToPlay].Play();
     }

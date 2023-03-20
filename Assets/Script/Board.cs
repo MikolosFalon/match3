@@ -40,12 +40,14 @@ public class Board : MonoBehaviour
     private int streakValue = 1;
     private ScoreManager scoreManager;
     private SoundManager soundManager;
+    private GoalManager goalManager;
     private float refillDelay = 0.5f;
     public List<int> scoreGoals;
 
     private void Start() {
         breakableTiles = new bgTitle[size.x, size.y];
         //currentState = GameState.move;
+        goalManager = FindObjectOfType<GoalManager>();
         findMatches=FindObjectOfType<FindMatches>();
         scoreManager = FindObjectOfType<ScoreManager>();
         soundManager = FindObjectOfType<SoundManager>();
@@ -248,7 +250,13 @@ public class Board : MonoBehaviour
                     breakableTiles[positionPiece.x, positionPiece.y] = null;
                 }
             }
-            //does the sound manager
+            
+            if(goalManager !=null){
+                goalManager.CompareGoal(allDots[positionPiece.x, positionPiece.y].tag.ToString());
+                goalManager.UpdateGoals();
+            }
+
+            //does the sound manager exist
             if(soundManager !=null){
                 soundManager.PlayRandomDestroyNoise();
             }

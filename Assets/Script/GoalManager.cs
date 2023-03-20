@@ -5,14 +5,16 @@ using UnityEngine;
 public class GoalManager : MonoBehaviour
 {
     [SerializeField] private List<BlankGoal> levelGoals;
+    [SerializeField] private List<GoalPanel> currentGoals;
     [SerializeField] private GameObject goalPrefab;
     [SerializeField] private GameObject goalIntroParent;
     [SerializeField] private GameObject goalGameParent;
 
     private void Start() {
-        SetupIntroGoals();
+        currentGoals = new List<GoalPanel>();
+        SetupGoals();
     }
-    private void SetupIntroGoals(){
+    private void SetupGoals(){
         for (int i = 0; i < levelGoals.Count; i++)
         {
             //Create a new Goal panel at the goalIntroParent position
@@ -29,6 +31,7 @@ public class GoalManager : MonoBehaviour
             GameObject gameGoal= Instantiate(goalPrefab, goalGameParent.transform.position, 
                 Quaternion.identity);
             gameGoal.transform.SetParent(goalGameParent.transform, false);
+            currentGoals.Add(panel);
 
             //Set the image and text of the gameGoal;
             GoalPanel gamePanel = gameGoal.GetComponent<GoalPanel>();
@@ -36,7 +39,30 @@ public class GoalManager : MonoBehaviour
             gamePanel.thisString ="0/"+ levelGoals[i].numberNeeded;
         }
     }
-
+    public void UpdateGoals(){
+        int goalsCompleted = 0;
+        for (int i = 0; i < levelGoals.Count; i++)
+        {
+            currentGoals[i].thisText.text =
+                levelGoals[i].numberCollected + "/" + levelGoals[i].numberNeeded;
+                if(levelGoals[i].numberCollected >= levelGoals[i].numberNeeded){
+                    goalsCompleted++;
+                    currentGoals[i].thisText.text=
+                        levelGoals[i].numberNeeded + "/" + levelGoals[i].numberNeeded;
+            }
+        }
+        if(goalsCompleted >=levelGoals.Count){
+            //you win
+        }
+    }
+    public void CompareGoal(string goalToCompare){
+        for (int i = 0; i < levelGoals.Count; i++)
+        {
+            if(goalToCompare == levelGoals[i].MatchValue){
+                levelGoals[i].numberCollected++;
+            }
+        }
+    }
 }
 
 [System.Serializable]
